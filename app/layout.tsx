@@ -11,6 +11,8 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const bp = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const metadata: Metadata = {
   title: {
     default: "Terra Numerica — Les sciences du numérique à portée de main",
@@ -20,14 +22,14 @@ export const metadata: Metadata = {
     "Terra Numerica est un consortium CNRS/Inria/Université Côte d'Azur pour la culture scientifique et l'éducation au numérique.",
   metadataBase: new URL("https://terra-numerica.org"),
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: `${bp}/favicon.png`,
+    apple: `${bp}/favicon.png`,
   },
   openGraph: {
     siteName: "Terra Numerica",
     locale: "fr_FR",
     type: "website",
-    images: [{ url: "/logo-tn.png" }],
+    images: [{ url: `${bp}/logo-tn.png` }],
   },
   alternates: {
     canonical: "/",
