@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[97367,["/terra_website/_next/static/chunks/0uetw5n.nzow_.js","/terra_website/_next/static/chunks/0d3shmwh5_nmn.js"],"OutletBoundary"]
-3:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"max-w-4xl mx-auto px-4 py-12","children":[["$","h1",null,{"className":"text-lg font-semibold text-white mb-6","children":"Accessibilité — Terra Numerica"}],["$","p",null,{"className":"text-base text-white/70","children":"Page en construction — Accessibilité — Terra Numerica"}]]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"7yh1mwFIxoAG0uYNjg5za"}
-4:null
