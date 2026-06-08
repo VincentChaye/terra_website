@@ -1,14 +1,20 @@
 import { NextResponse } from "next/server";
 import { getPublicEvents } from "@/lib/wimi";
+import { corsHeaders, corsPreflight } from "@/lib/cors";
 
-// Cache 5 minutes côté serveur
-export const revalidate = 300;
+// Route Handler dynamique (non caché par défaut) : chaque requête interroge Wimi.
+// Suffisant pour un agenda associatif à faible trafic ; pas d'ISR ici (handler,
+// pas page — cf. docs Next « Route Handlers / Caching »).
+
+export function OPTIONS() {
+  return corsPreflight();
+}
 
 export async function GET() {
   if (!process.env.WIMI_APP_TOKEN) {
     return NextResponse.json(
       { error: "Wimi non configuré (WIMI_APP_TOKEN manquant)" },
-      { status: 503 }
+      { status: 503, headers: corsHeaders() }
     );
   }
 
@@ -20,14 +26,15 @@ export async function GET() {
 
   try {
     const events = await getPublicEvents(from, to);
-    return NextResponse.json({ events }, {
-      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60" },
-    });
+    return NextResponse.json(
+      { events },
+      { headers: { ...corsHeaders(), "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60" } }
+    );
   } catch (err) {
     console.error("[agenda] Erreur Wimi :", err);
     return NextResponse.json(
       { error: String(err instanceof Error ? err.message : err) },
-      { status: 502 }
+      { status: 502, headers: corsHeaders() }
     );
   }
 }

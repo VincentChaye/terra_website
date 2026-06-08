@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/layout/PageHeader";
 import AgendaView from "@/components/AgendaView";
-import { getPublicEvents, type WimiEvent } from "@/lib/wimi";
 
 export const metadata: Metadata = {
   title: "Agenda — Événements grand public",
@@ -10,28 +9,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/visiter/agenda" },
 };
 
-// Re-génère toutes les 5 minutes (ISR)
-export const revalidate = 300;
-
-async function fetchEvents(): Promise<{ events: WimiEvent[]; error?: string }> {
-  if (!process.env.WIMI_APP_TOKEN) {
-    return { events: [], error: "Wimi non configuré" };
-  }
-  try {
-    const from = new Date();
-    from.setHours(0, 0, 0, 0);
-    const to = new Date(from);
-    to.setMonth(to.getMonth() + 4);
-    const events = await getPublicEvents(from, to);
-    return { events };
-  } catch (err) {
-    return { events: [], error: String(err instanceof Error ? err.message : err) };
-  }
-}
-
-export default async function AgendaPage() {
-  const { events, error } = await fetchEvents();
-
+// Page statique : l'agenda est chargé côté client depuis le backend Render
+// (cf. AgendaView → /api/agenda). Aucun secret ni fetch serveur ici.
+export default function AgendaPage() {
   return (
     <div>
       <PageHeader
@@ -50,8 +30,8 @@ export default async function AgendaPage() {
           </a>
         </p>
 
-        {/* Agenda connecté Wimi */}
-        <AgendaView events={events} error={error} />
+        {/* Agenda connecté Wimi (chargé côté client depuis le backend) */}
+        <AgendaView />
 
         {/* Section info récurrents */}
         <div className="mt-16 grid sm:grid-cols-2 gap-6">

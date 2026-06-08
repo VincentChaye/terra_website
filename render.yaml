@@ -1,0 +1,26 @@
+# Backend dynamique (architecture hybride) — déployé sur Render.
+# Même repo que le frontend GitHub Pages, mais ici en app Node complète
+# (pas de STATIC_EXPORT) : seules les routes app/api/* sont réellement utilisées.
+services:
+  - type: web
+    name: terra-numerica-backend
+    runtime: node
+    plan: free # passer à "starter" pour supprimer le spin-down (cold start ~1 min)
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Secrets / valeurs spécifiques à l'environnement : à saisir dans le dashboard Render.
+      - key: WIMI_APP_TOKEN
+        sync: false
+      - key: WIMI_SPACE_ID
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_FROM_EMAIL # ex. "Terra Numerica <site@terra-numerica.org>"
+        sync: false
+      - key: CONTACT_TO_EMAIL # ex. contact@terra-numerica.org
+        sync: false
+      - key: FRONTEND_ORIGIN # origine GitHub Pages, ex. https://user.github.io (sans chemin)
+        sync: false

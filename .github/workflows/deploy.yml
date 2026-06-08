@@ -22,10 +22,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # L'export statique ne supporte ni les handlers POST ni les GET dynamiques.
+      # Les routes API sont servies par le backend Render, pas par GitHub Pages :
+      # on les retire de ce build (la source au repo n'est pas touchée).
+      - name: Exclude backend-only API routes from static export
+        run: rm -rf app/api
+
       - name: Build static export
         run: npm run build
         env:
+          STATIC_EXPORT: "true"
           NEXT_PUBLIC_BASE_PATH: /terra_website
+          # URL du backend Render (variable de dépôt, pas un secret — inlinée dans le bundle client).
+          NEXT_PUBLIC_API_BASE: ${{ vars.NEXT_PUBLIC_API_BASE }}
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3

@@ -3,25 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const schema = z.object({
-  etablissement: z.string().min(2, "Nom de l'établissement requis"),
-  nom: z.string().min(2, "Nom requis"),
-  prenom: z.string().min(2, "Prénom requis"),
-  email: z.string().email("Adresse e-mail invalide"),
-  telephone: z.string().min(10, "Téléphone invalide").max(15),
-  niveau: z.string().min(1, "Niveau requis"),
-  nbEleves: z.string().refine((v) => {
-    const n = parseInt(v, 10);
-    return !isNaN(n) && n >= 1 && n <= 200;
-  }, "Entre 1 et 200 élèves"),
-  datesSouhaitees: z.string().min(5, "Précisez vos disponibilités"),
-  message: z.string().optional(),
-  rgpd: z.literal(true, { message: "Vous devez accepter le traitement de vos données" }),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { apiUrl } from "@/lib/api";
+import { reservationScolairesSchema, type ReservationScolairesValues } from "@/lib/forms";
 
 const niveaux = [
   "Maternelle",
@@ -41,12 +24,12 @@ export default function ReservationScolairesForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<ReservationScolairesValues>({ resolver: zodResolver(reservationScolairesSchema) });
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: ReservationScolairesValues) {
     setStatus("sending");
     try {
-      const res = await fetch("/api/reservation-scolaires", {
+      const res = await fetch(apiUrl("/api/reservation-scolaires"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -76,6 +59,11 @@ export default function ReservationScolairesForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      {/* Honeypot anti-spam : invisible, doit rester vide */}
+      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="resa-website">Ne pas remplir</label>
+        <input id="resa-website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
+      </div>
       {/* Contact */}
       <fieldset className="space-y-4">
         <legend className="text-sm font-semibold text-white mb-2">Votre établissement</legend>

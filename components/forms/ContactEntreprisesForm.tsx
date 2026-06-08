@@ -3,25 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const schema = z.object({
-  entreprise: z.string().min(2, "Nom de l'entreprise requis"),
-  nom: z.string().min(2, "Nom requis"),
-  prenom: z.string().min(2, "Prénom requis"),
-  email: z.string().email("Adresse e-mail invalide"),
-  telephone: z.string().min(10, "Téléphone invalide").max(15),
-  interet: z.string().min(1, "Veuillez sélectionner un sujet"),
-  nbParticipants: z.string().optional().refine((v) => {
-    if (!v || v === "") return true;
-    const n = parseInt(v, 10);
-    return !isNaN(n) && n >= 1 && n <= 500;
-  }, "Entre 1 et 500 participants"),
-  message: z.string().min(10, "Message trop court"),
-  rgpd: z.literal(true, { message: "Vous devez accepter le traitement de vos données" }),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { apiUrl } from "@/lib/api";
+import { contactEntreprisesSchema, type ContactEntreprisesValues } from "@/lib/forms";
 
 const interets = [
   "Team building / visite découverte",
@@ -38,12 +21,12 @@ export default function ContactEntreprisesForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<ContactEntreprisesValues>({ resolver: zodResolver(contactEntreprisesSchema) });
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: ContactEntreprisesValues) {
     setStatus("sending");
     try {
-      const res = await fetch("/api/contact-entreprises", {
+      const res = await fetch(apiUrl("/api/contact-entreprises"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -73,6 +56,11 @@ export default function ContactEntreprisesForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      {/* Honeypot anti-spam : invisible, doit rester vide */}
+      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="ent-website">Ne pas remplir</label>
+        <input id="ent-website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
+      </div>
       <div>
         <label htmlFor="entreprise" className="block text-sm mb-1">Entreprise *</label>
         <input id="entreprise" type="text" {...register("entreprise")} className={field} />

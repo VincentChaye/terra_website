@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { WimiEvent } from "@/lib/wimi";
+import { apiUrl } from "@/lib/api";
 
 const MONTHS_FR = [
   "Janvier","Février","Mars","Avril","Mai","Juin",
@@ -114,30 +116,56 @@ function EventCard({ ev }: { ev: WimiEvent }) {
 }
 
 /* ── Vue principale ────────────────────────────────────────── */
-export default function AgendaView({
-  events,
-  error,
-}: {
-  events: WimiEvent[];
-  error?: string;
-}) {
-  /* Wimi non configuré (dev / test) */
-  if (error === "Wimi non configuré") {
+export default function AgendaView() {
+  const [events, setEvents] = useState<WimiEvent[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(apiUrl("/api/agenda"));
+        const data = (await res.json().catch(() => ({}))) as {
+          events?: WimiEvent[];
+          error?: string;
+        };
+        if (cancelled) return;
+        if (!res.ok || data.error) {
+          setError(data.error ?? `Erreur ${res.status}`);
+          setStatus("error");
+          return;
+        }
+        setEvents(data.events ?? []);
+        setStatus("ready");
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : String(err));
+        setStatus("error");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* Chargement */
+  if (status === "loading") {
     return (
-      <div className="rounded-xl border border-dashed border-white/15 bg-white/3 px-6 py-8 text-center">
-        <p className="text-white/50 text-sm">
-          L&apos;agenda Wimi n&apos;est pas encore configuré.
-        </p>
-        <p className="text-white/30 text-xs mt-1">
-          Ajoutez <code className="text-tn-blue">WIMI_APP_TOKEN</code> et{" "}
-          <code className="text-tn-blue">WIMI_SPACE_ID</code> dans les variables d&apos;environnement.
-        </p>
+      <div className="rounded-xl border border-white/10 bg-white/3 px-6 py-10 text-center">
+        <div
+          className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-tn-blue"
+          aria-hidden="true"
+        />
+        <p className="text-white/45 text-sm mt-3">Chargement de l&apos;agenda…</p>
       </div>
     );
   }
 
   /* Erreur API */
-  if (error) {
+  if (status === "error") {
     return (
       <div className="rounded-xl border border-red-500/25 bg-red-900/10 px-6 py-5">
         <p className="text-white/70 text-sm">Impossible de charger l&apos;agenda Wimi.</p>
