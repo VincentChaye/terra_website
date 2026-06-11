@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 
 export const metadata: Metadata = {
   title: "Terra Numerica — Les sciences du numérique à portée de main",
@@ -29,17 +30,17 @@ const growthMax = 40000;
 
 const photos = [
   {
-    src: "/thumb_c2kGOPqLhPM.jpg",
+    src: asset("/thumb_c2kGOPqLhPM.jpg"),
     alt: "Atelier robotique avec des élèves à Terra Numerica Sophia",
     caption: "Ateliers pour les scolaires",
   },
   {
-    src: "/thumb_4zo9_7Gm8v4.jpg",
+    src: asset("/thumb_4zo9_7Gm8v4.jpg"),
     alt: "Conférence géométrie interactive avec des enfants",
     caption: "Conférences interactives",
   },
   {
-    src: "/thumb_036we6iat08.jpg",
+    src: asset("/thumb_036we6iat08.jpg"),
     alt: "Village des sciences Terra Numerica",
     caption: "Village des sciences",
   },
@@ -210,7 +211,7 @@ export default function HomePage() {
         </div>
         <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-video">
           <Image
-            src="/thumb_evb13BXG-G0.jpg"
+            src={asset("/thumb_evb13BXG-G0.jpg")}
             alt="97 437 citoyens et 6 857 enseignants touchés par Terra Numerica"
             fill
             className="object-cover"
@@ -274,7 +275,7 @@ export default function HomePage() {
         <div className="mt-4 grid sm:grid-cols-2 gap-4">
           <div className="group relative overflow-hidden rounded-xl" style={{ aspectRatio: "16/7" }}>
             <Image
-              src="/thumb_eu8G7O6SGJA.jpg"
+              src={asset("/thumb_eu8G7O6SGJA.jpg")}
               alt="Présentation Terra Numerica avec partenaires CNRS Inria UCA"
               fill
               className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
@@ -284,7 +285,7 @@ export default function HomePage() {
           </div>
           <div className="group relative overflow-hidden rounded-xl" style={{ aspectRatio: "16/7" }}>
             <Image
-              src="/thumb_c2kGOPqLhPM.jpg"
+              src={asset("/thumb_c2kGOPqLhPM.jpg")}
               alt="Atelier pratique avec des enfants et des chercheurs"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

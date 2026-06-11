@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/layout/CookieBanner";
+import { asset } from "@/lib/asset";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -21,8 +22,8 @@ export const metadata: Metadata = {
     "Terra Numerica est un consortium CNRS/Inria/Université Côte d'Azur pour la culture scientifique et l'éducation au numérique.",
   metadataBase: new URL("https://terra-numerica.org"),
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: asset("/favicon.png"),
+    apple: asset("/favicon.png"),
   },
   openGraph: {
     siteName: "Terra Numerica",

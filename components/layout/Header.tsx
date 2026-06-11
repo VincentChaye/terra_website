@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { asset } from "@/lib/asset";
 
 const navItems = [
   { label: "Découvrir", href: "/decouvrir" },
@@ -27,7 +28,7 @@ export default function Header() {
           aria-label="Terra Numerica — accueil"
         >
           <Image
-            src="/globe-tn.png"
+            src={asset("/globe-tn.png")}
             alt=""
             width={270}
             height={270}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 
 const sections = [
   {
@@ -103,7 +104,7 @@ export default function Footer() {
         {/* Logos institutionnels */}
         <div className="flex justify-center mb-4">
           <Image
-            src="/logos-institutions.jpg"
+            src={asset("/logos-institutions.jpg")}
             alt="CNRS · Inria · Université Côte d'Azur"
             width={1500}
             height={600}
