@@ -22,7 +22,7 @@ async function wimiCall(target: string, body: WimiBody = {}): Promise<unknown> {
   const payload = {
     header: {
       target,
-      identification: { app_token: token, api_version: "2.0" },
+      identification: { app_token: token, api_version: "1.2" },
     },
     body,
   };
@@ -56,7 +56,7 @@ export async function getPublicEvents(fromDate: Date, toDate: Date): Promise<Wim
     start_date: fmt(fromDate),
     end_date:   fmt(toDate),
   };
-  if (spaceId) body.space_id = Number(spaceId);
+  if (spaceId) body.project_id = Number(spaceId);
 
   const raw = await wimiCall("calendar.event.GetList", body) as unknown;
 
