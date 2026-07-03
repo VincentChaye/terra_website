@@ -8,6 +8,12 @@ services:
     plan: free # passer à "starter" pour supprimer le spin-down (cold start ~1 min)
     buildCommand: npm ci && npm run build
     startCommand: npm start
+    buildFilter:
+      ignoredPaths:
+        - content/**
+        - public/uploads/**
+        - cms/**
+        - docs/**
     envVars:
       - key: NODE_VERSION
         value: "20"
@@ -24,3 +30,14 @@ services:
         sync: false
       - key: FRONTEND_ORIGIN # origine GitHub Pages, ex. https://user.github.io (sans chemin)
         sync: false
+      # ─── CMS (Phase 2) ───
+      - key: GITHUB_CMS_TOKEN # PAT fine-grained : ce repo, contents:write + actions:read
+        sync: false
+      - key: GITHUB_REPO # ex. "org/tn-site"
+        sync: false
+      - key: WIMI_CMS_SPACE_ID # espace Wimi donnant droit d'accès au CMS
+        sync: false
+      - key: CMS_JWT_SECRET # openssl rand -hex 32
+        sync: false
+      - key: CMS_MIN_APP_VERSION # version minimale de l'app CMS acceptée
+        value: "0.0.0"
