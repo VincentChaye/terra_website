@@ -1,132 +1,76 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { WimiEvent } from "@/lib/wimi";
 import { apiUrl } from "@/lib/api";
+import {
+  addDays,
+  addMonths,
+  AgendaViewMode,
+  indexEventsByDay,
+  MONTHS_FR,
+  startOfWeek,
+  toDayKey,
+  weekLabel,
+} from "@/components/agenda/date-utils";
+import MonthGrid from "@/components/agenda/MonthGrid";
+import WeekGrid from "@/components/agenda/WeekGrid";
+import YearGrid from "@/components/agenda/YearGrid";
+import EventPopover from "@/components/agenda/EventPopover";
 
-const MONTHS_FR = [
-  "Janvier","Février","Mars","Avril","Mai","Juin",
-  "Juillet","Août","Septembre","Octobre","Novembre","Décembre",
+type Popover = {
+  event: WimiEvent;
+  anchor: { top: number; left: number; bottom: number; right: number };
+};
+
+const VIEWS: { id: AgendaViewMode; label: string }[] = [
+  { id: "week", label: "Semaine" },
+  { id: "month", label: "Mois" },
+  { id: "year", label: "Année" },
 ];
-const DAYS_FR = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
 
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  return {
-    day:   DAYS_FR[d.getDay()],
-    date:  d.getDate(),
-    month: MONTHS_FR[d.getMonth()],
-    year:  d.getFullYear(),
-    time:  d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-  };
-}
-
-function isSameDay(a: string, b: string) {
-  return a.slice(0, 10) === b.slice(0, 10);
-}
-
-function groupByMonth(events: WimiEvent[]) {
-  const groups: Map<string, WimiEvent[]> = new Map();
-  for (const ev of events) {
-    const d = new Date(ev.start);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(ev);
+/** Plage de dates visible selon la vue courante */
+function visibleRange(view: AgendaViewMode, cursor: Date): [Date, Date] {
+  if (view === "week") {
+    const s = startOfWeek(cursor);
+    return [s, addDays(s, 7)];
   }
-  return groups;
+  if (view === "month") {
+    return [
+      new Date(cursor.getFullYear(), cursor.getMonth(), 1),
+      new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1),
+    ];
+  }
+  return [new Date(cursor.getFullYear(), 0, 1), new Date(cursor.getFullYear() + 1, 0, 1)];
 }
 
-function monthLabel(key: string) {
-  const [year, month] = key.split("-");
-  return `${MONTHS_FR[Number(month) - 1]} ${year}`;
-}
-
-/* ── Carte événement ───────────────────────────────────────── */
-function EventCard({ ev }: { ev: WimiEvent }) {
-  const s = formatDate(ev.start);
-  const e = formatDate(ev.end);
-  const multiDay = !isSameDay(ev.start, ev.end);
-
-  return (
-    <article className="group flex gap-4 rounded-xl border border-white/10 bg-white/3 hover:border-tn-blue/50 hover:bg-white/5 transition-colors px-5 py-4">
-      {/* Bloc date */}
-      <div className="shrink-0 w-14 text-center">
-        <p className="text-white/40 text-xs uppercase tracking-wide">{s.day}</p>
-        <p className="text-tn-blue text-2xl font-bold leading-none">{s.date}</p>
-        <p className="text-white/55 text-xs">{s.month}</p>
-        {multiDay && (
-          <p className="text-white/30 text-[10px] mt-1">→ {e.date} {e.month}</p>
-        )}
-      </div>
-
-      {/* Contenu */}
-      <div className="flex-1 min-w-0">
-        <h3 className="text-white font-semibold text-sm leading-snug truncate group-hover:text-tn-blue transition-colors">
-          {ev.title}
-        </h3>
-
-        {/* Horaires */}
-        {!ev.allDay && (
-          <p className="text-white/45 text-xs mt-0.5">
-            {s.time}{!multiDay && ` – ${e.time}`}
-          </p>
-        )}
-        {ev.allDay && (
-          <p className="text-white/45 text-xs mt-0.5">Journée entière</p>
-        )}
-
-        {/* Lieu */}
-        {ev.location && (
-          <div className="flex items-center gap-1 mt-1.5">
-            <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3 text-white/30 shrink-0" aria-hidden="true">
-              <path fillRule="evenodd" d="M8 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM2 6a6 6 0 1 1 10.68 3.77l-3.98 4.37a1 1 0 0 1-1.4 0L3.32 9.77A5.97 5.97 0 0 1 2 6zm6-.5a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 1 0V6a.5.5 0 0 0-.5-.5z" clipRule="evenodd"/>
-            </svg>
-            <span className="text-white/45 text-xs truncate">{ev.location}</span>
-          </div>
-        )}
-
-        {/* Description (tronquée) */}
-        {ev.description && (
-          <p className="text-white/55 text-xs mt-2 leading-relaxed line-clamp-2">
-            {ev.description}
-          </p>
-        )}
-
-        {/* Tags + lien */}
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
-          {ev.tags.map((t) => (
-            <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-tn-blue/15 text-tn-blue border border-tn-blue/20">
-              {t}
-            </span>
-          ))}
-          {ev.url && (
-            <a
-              href={ev.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-tn-blue text-xs hover:underline ml-auto"
-            >
-              S&apos;inscrire →
-            </a>
-          )}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-/* ── Vue principale ────────────────────────────────────────── */
 export default function AgendaView() {
+  const [view, setView] = useState<AgendaViewMode>("month");
+  const [cursor, setCursor] = useState<Date>(() => new Date());
   const [events, setEvents] = useState<WimiEvent[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | undefined>(undefined);
+  const [popover, setPopover] = useState<Popover | null>(null);
+
+  // Fenêtre de données déjà chargée ; élargie au besoin quand on navigue.
+  const loadedWindow = useRef<[Date, Date] | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    const [visFrom, visTo] = visibleRange(view, cursor);
+    const win = loadedWindow.current;
+    if (win && visFrom >= win[0] && visTo <= win[1]) return; // déjà couvert
 
+    // Fenêtre large : année civile du début visible → année suivante complète,
+    // pour que la navigation semaine/mois/année reste instantanée.
+    const from = new Date(Math.min(visFrom.getFullYear(), new Date().getFullYear()), 0, 1);
+    const to = new Date(Math.max(visTo.getFullYear(), new Date().getFullYear() + 1) + 1, 0, 1);
+
+    let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(apiUrl("/api/agenda"));
+        const res = await fetch(
+          apiUrl(`/api/agenda?from=${toDayKey(from)}&to=${toDayKey(addDays(to, -1))}`)
+        );
         const data = (await res.json().catch(() => ({}))) as {
           events?: WimiEvent[];
           error?: string;
@@ -137,6 +81,7 @@ export default function AgendaView() {
           setStatus("error");
           return;
         }
+        loadedWindow.current = [from, to];
         setEvents(data.events ?? []);
         setStatus("ready");
       } catch (err) {
@@ -149,9 +94,36 @@ export default function AgendaView() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [view, cursor]);
 
-  /* Chargement */
+  const eventsByDay = useMemo(() => indexEventsByDay(events), [events]);
+
+  /* Navigation */
+  const goToday = () => setCursor(new Date());
+  const go = (dir: 1 | -1) => {
+    setCursor((c) => {
+      if (view === "week") return addDays(c, 7 * dir);
+      if (view === "month") return addMonths(c, dir);
+      return new Date(c.getFullYear() + dir, c.getMonth(), 1);
+    });
+  };
+
+  /* Titre de la période */
+  const title =
+    view === "week"
+      ? weekLabel(startOfWeek(cursor))
+      : view === "month"
+        ? `${MONTHS_FR[cursor.getMonth()]} ${cursor.getFullYear()}`
+        : String(cursor.getFullYear());
+
+  const openPopover = (event: WimiEvent, rect: DOMRect) => {
+    setPopover({
+      event,
+      anchor: { top: rect.top, left: rect.left, bottom: rect.bottom, right: rect.right },
+    });
+  };
+
+  /* Chargement initial */
   if (status === "loading") {
     return (
       <div className="rounded-xl border border-white/10 bg-white/3 px-6 py-10 text-center">
@@ -174,33 +146,89 @@ export default function AgendaView() {
     );
   }
 
-  /* Aucun événement */
-  if (events.length === 0) {
-    return (
-      <div className="rounded-xl border border-white/10 bg-white/3 px-6 py-8 text-center">
-        <p className="text-white/50 text-sm">Aucun événement à venir pour le moment.</p>
-        <p className="text-white/30 text-xs mt-1">Revenez bientôt ou consultez nos réseaux sociaux.</p>
-      </div>
-    );
-  }
-
-  /* Liste groupée par mois */
-  const groups = groupByMonth(events);
-
   return (
-    <div className="space-y-10">
-      {Array.from(groups.entries()).map(([key, evs]) => (
-        <section key={key}>
-          <h2 className="text-tn-blue text-xs font-semibold uppercase tracking-widest mb-4">
-            {monthLabel(key)}
-          </h2>
-          <div className="space-y-3">
-            {evs.map((ev) => (
-              <EventCard key={ev.id} ev={ev} />
-            ))}
-          </div>
-        </section>
-      ))}
+    <div>
+      {/* Barre d'outils */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => go(-1)}
+            aria-label="Période précédente"
+            className="w-8 h-8 rounded-lg border border-white/10 text-white/60 hover:text-white hover:border-tn-blue/50 transition-colors flex items-center justify-center"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            onClick={goToday}
+            className="h-8 px-3 rounded-lg border border-white/10 text-white/70 text-sm hover:text-white hover:border-tn-blue/50 transition-colors"
+          >
+            Aujourd&apos;hui
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Période suivante"
+            className="w-8 h-8 rounded-lg border border-white/10 text-white/60 hover:text-white hover:border-tn-blue/50 transition-colors flex items-center justify-center"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
+        <h2 className="text-white font-semibold text-base sm:text-lg flex-1 text-center capitalize">
+          {title}
+        </h2>
+
+        {/* Sélecteur de vue */}
+        <div className="flex rounded-lg border border-white/10 overflow-hidden">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              onClick={() => setView(v.id)}
+              className={`px-3 h-8 text-sm transition-colors ${
+                view === v.id
+                  ? "bg-tn-blue text-white font-medium"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Vue courante */}
+      {view === "month" && (
+        <MonthGrid
+          month={new Date(cursor.getFullYear(), cursor.getMonth(), 1)}
+          eventsByDay={eventsByDay}
+          onEventClick={openPopover}
+        />
+      )}
+      {view === "week" && (
+        <WeekGrid weekStart={startOfWeek(cursor)} events={events} onEventClick={openPopover} />
+      )}
+      {view === "year" && (
+        <YearGrid
+          year={cursor.getFullYear()}
+          eventsByDay={eventsByDay}
+          onMonthSelect={(month) => {
+            setCursor(month);
+            setView("month");
+          }}
+        />
+      )}
+
+      {/* Détail événement */}
+      {popover && (
+        <EventPopover
+          event={popover.event}
+          anchor={popover.anchor}
+          onClose={() => setPopover(null)}
+        />
+      )}
     </div>
   );
 }
