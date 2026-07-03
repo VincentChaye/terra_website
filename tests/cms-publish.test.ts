@@ -5,7 +5,7 @@ vi.mock("@/lib/cms-locks", () => ({ holdsLock: vi.fn(), releaseLock: vi.fn() }))
 
 import { commitFiles } from "@/lib/github";
 import { holdsLock, releaseLock } from "@/lib/cms-locks";
-import { publish, PublishError, validateImages } from "@/lib/cms-publish";
+import { publish, validateImages } from "@/lib/cms-publish";
 
 const mockCommit = vi.mocked(commitFiles);
 const mockHolds = vi.mocked(holdsLock);
