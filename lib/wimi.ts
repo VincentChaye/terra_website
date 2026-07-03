@@ -42,13 +42,21 @@ function requiredEnv(name: string): string {
   return v;
 }
 
+/** Erreur renvoyée par la WApi dans body.error (HTTP 200 malgré tout). */
+export class WimiApiError extends Error {
+  constructor(message: string, readonly errorId?: number, readonly target?: string) {
+    super(message);
+    this.name = "WimiApiError";
+  }
+}
+
 /**
  * Appel bas niveau à la WApi. Attention, pièges constatés :
  * - la casse des cibles compte (`auth.user.Login`, pas `auth.user.login`) ;
  * - `msg_key` est obligatoire (sans lui : « Bad Request » générique) ;
  * - HTTP 200 même en erreur — les erreurs arrivent dans `body.error`.
  */
-async function wimiCall(
+export async function wimiCall(
   target: string,
   identification: Record<string, unknown>,
   data: WimiBody | null,
@@ -83,7 +91,11 @@ async function wimiCall(
 
   const err = raw?.body?.error;
   if (err && err.success === false) {
-    throw new Error(`Wimi erreur ${err.id ?? ""} : ${err.str ?? "inconnue"} (${target})`.trim());
+    throw new WimiApiError(
+      `Wimi erreur ${err.id ?? ""} : ${err.str ?? "inconnue"} (${target})`.trim(),
+      err.id,
+      target
+    );
   }
 
   return { header: raw?.header ?? {}, data: raw?.body?.data };
