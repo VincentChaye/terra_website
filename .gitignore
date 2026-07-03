@@ -40,8 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# markdown files (auto-générés) — garder seulement README et configs agents
+# markdown files (auto-générés) — garder seulement README, configs agents et docs
 *.md
 !README.md
 !AGENTS.md
 !CLAUDE.md
+!docs/**/*.md
