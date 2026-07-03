@@ -58,6 +58,11 @@ describe("publish", () => {
     expect(mockRelease).toHaveBeenCalledWith("presse", "a@b.fr");
   });
 
+  it("publie quand même si la libération du verrou échoue", async () => {
+    mockRelease.mockRejectedValueOnce(new Error("conflit"));
+    await expect(publish("presse", "a@b.fr", validPresse, [])).resolves.toEqual({ commitSha: "commit1" });
+  });
+
   it("409 si l'appelant ne détient pas le verrou", async () => {
     mockHolds.mockResolvedValueOnce(false);
     await expect(publish("presse", "a@b.fr", validPresse, [])).rejects.toMatchObject({ status: 409 });

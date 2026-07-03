@@ -77,6 +77,19 @@ export async function publish(
   ];
 
   const commitSha = await commitFiles(files, `CMS : ${entry.label} modifié par ${email}`);
-  await releaseLock(collection, email);
+
+  // Le commit a réussi : la publication a eu lieu et le déploiement est déclenché.
+  // Si la libération du verrou échoue à ce stade, on ne doit pas renvoyer une
+  // erreur 502 au client — ce serait mentir sur l'état réel (le contenu est
+  // bien publié). Le verrou expirera de lui-même sous 24 h.
+  try {
+    await releaseLock(collection, email);
+  } catch (error) {
+    console.warn(
+      `CMS : échec de la libération du verrou pour la collection "${collection}" (utilisateur ${email})`,
+      error
+    );
+  }
+
   return { commitSha };
 }
