@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { api, ApiError, versionAtLeast } from "../lib/api";
 import { groupedRegistry } from "../lib/form";
 import type { Session } from "../lib/session";
+import { CollectionScreen } from "./CollectionScreen";
 
 type Gate = "checking" | "ok" | "outdated" | "offline";
 
@@ -83,8 +84,8 @@ export function Shell({ session, onLogout }: { session: Session; onLogout: () =>
       </aside>
       <main>
         {selected ? (
-          /* Remplacé par <CollectionScreen> en Task 9. */
-          <p className="centered">{selected}</p>
+          <CollectionScreen key={selected} collection={selected} session={session}
+            onAuthExpired={onLogout} />
         ) : (
           <p className="centered">Choisissez un contenu à modifier dans le menu.</p>
         )}
