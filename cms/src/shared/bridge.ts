@@ -11,6 +11,10 @@ export type CmsBridge = {
   writeDraft(key: string, data: unknown): Promise<void>;
   deleteDraft(key: string): Promise<void>;
   appVersion(): Promise<string>;
+  apiRequest(
+    path: string,
+    opts?: { method?: string; body?: unknown; token?: string | null }
+  ): Promise<{ status: number; json: unknown }>;
 };
 
 declare global {

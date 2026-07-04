@@ -14,6 +14,7 @@ const bridge: CmsBridge = {
   writeDraft: (key, data) => ipcRenderer.invoke("draft:write", key, data),
   deleteDraft: (key) => ipcRenderer.invoke("draft:delete", key),
   appVersion: () => ipcRenderer.invoke("app:version"),
+  apiRequest: (path, opts) => ipcRenderer.invoke("api:request", path, opts),
 };
 
 contextBridge.exposeInMainWorld("cms", bridge);

@@ -6,6 +6,7 @@
 import { app, ipcMain, safeStorage } from "electron";
 import { join } from "node:path";
 import { DraftStore, TokenStore, type Encryptor } from "./stores";
+import { apiRequest, type ApiRequestOptions } from "./api";
 
 export function registerIpc(): void {
   const enc: Encryptor = {
@@ -23,4 +24,7 @@ export function registerIpc(): void {
   ipcMain.handle("draft:write", (_e, key: string, data: unknown) => drafts.write(key, data));
   ipcMain.handle("draft:delete", (_e, key: string) => drafts.delete(key));
   ipcMain.handle("app:version", () => app.getVersion());
+  ipcMain.handle("api:request", (_e, path: string, opts?: ApiRequestOptions) =>
+    apiRequest(path, opts)
+  );
 }
