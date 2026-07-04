@@ -16,6 +16,7 @@ import { api, ApiError, type LockStatus } from "../lib/api";
 import { emptyItem, fieldErrors, itemLabel, moveItem } from "../lib/form";
 import type { Session } from "../lib/session";
 import { ItemForm } from "./ItemForm";
+import { PublishBar } from "./PublishBar";
 
 export type Draft = {
   content: unknown;
@@ -140,6 +141,14 @@ export function CollectionScreen({ collection, session, onAuthExpired }: Props) 
     setSelected(null);
   }
 
+  async function handlePublished() {
+    // Le PUT du backend a commité ET libéré le verrou : on reflète localement.
+    await window.cms.deleteDraft(collection);
+    setServer((s) => (draftRef.current && s ? { ...s, content: draftRef.current.content } : s));
+    setDraft(null);
+    setLock({ locked: false });
+  }
+
   function addItem() {
     setContent([emptyItem(entry), ...items!]);
     setSelected(0);
@@ -231,7 +240,9 @@ export function CollectionScreen({ collection, session, onAuthExpired }: Props) 
           </div>
         </div>
       )}
-      {/* Task 10 : <PublishBar> s'insère ici. */}
+      <PublishBar entry={entry} collection={collection} session={session}
+        draft={draft} editing={editing}
+        onPublished={() => void handlePublished()} onError={fail} />
     </div>
   );
 }
