@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // App CMS : package séparé (tsconfig propre), vérifiée par `npm run typecheck` dans cms/.
+    "cms/**",
   ]),
 ]);
 
