@@ -98,6 +98,19 @@ describe("CollectionScreen", () => {
     );
   });
 
+  it("réordonner ne fait pas perdre la sélection à l'élément déplacé", async () => {
+    mocked.acquireLock.mockResolvedValue({ ok: true, expiresAt: future });
+    renderScreen();
+    fireEvent.click(await screen.findByRole("button", { name: "Modifier" }));
+    fireEvent.click(await screen.findByText("Deuxième article"));
+    expect((await screen.findByLabelText("Titre") as HTMLInputElement).value).toBe("Deuxième article");
+
+    // Déplace le premier élément vers le bas (échange avec le second, sélectionné).
+    fireEvent.click(screen.getAllByRole("button", { name: "↓" })[0]);
+
+    expect((screen.getByLabelText("Titre") as HTMLInputElement).value).toBe("Deuxième article");
+  });
+
   it("un brouillon existant prime sur le serveur, avec bandeau", async () => {
     cmsStub.readDraft.mockResolvedValue({
       content: [{ id: "p1", title: "Version brouillon", source: "s", date: "2026-06" }],

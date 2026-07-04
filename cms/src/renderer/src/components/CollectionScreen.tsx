@@ -153,8 +153,11 @@ export function CollectionScreen({ collection, session, onAuthExpired }: Props) 
   }
 
   function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= items!.length) return; // no-op dans moveItem : ne pas toucher à la sélection
     setContent(moveItem(items!, index, delta));
-    if (selected === index) setSelected(index + delta);
+    if (selected === index) setSelected(target);
+    else if (selected === target) setSelected(index);
   }
 
   const visible = items
