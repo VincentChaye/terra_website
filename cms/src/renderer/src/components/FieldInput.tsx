@@ -20,10 +20,12 @@ type Props = {
 export function FieldInput({ name, meta, value, error, readOnly, onChange }: Props) {
   const id = `field-${name}`;
   const text = (v: string) => onChange(meta.optional && v === "" ? undefined : v);
+  const isParagraphs = meta.widget === "paragraphs";
+  const labelId = isParagraphs ? `${id}-label` : undefined;
 
   return (
     <div className="field">
-      <label htmlFor={id}>
+      <label htmlFor={isParagraphs ? undefined : id} id={labelId}>
         {meta.label}
         {meta.optional ? <span className="muted"> (optionnel)</span> : null}
       </label>
@@ -34,7 +36,7 @@ export function FieldInput({ name, meta, value, error, readOnly, onChange }: Pro
         <input id={id} type="number" value={(value as number) ?? ""} readOnly={readOnly}
           onChange={(e) => onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)} />
       ) : meta.widget === "paragraphs" ? (
-        <ParagraphsInput id={id} value={(value as string[]) ?? []} readOnly={readOnly}
+        <ParagraphsInput labelId={labelId!} value={(value as string[]) ?? []} readOnly={readOnly}
           onChange={onChange} />
       ) : (
         <input id={id}
@@ -47,14 +49,14 @@ export function FieldInput({ name, meta, value, error, readOnly, onChange }: Pro
   );
 }
 
-function ParagraphsInput({ id, value, readOnly, onChange }: {
-  id: string;
+function ParagraphsInput({ labelId, value, readOnly, onChange }: {
+  labelId: string;
   value: string[];
   readOnly: boolean;
   onChange: (v: string[]) => void;
 }) {
   return (
-    <div className="paragraphs" id={id}>
+    <div className="paragraphs" role="group" aria-labelledby={labelId}>
       {value.map((paragraph, i) => (
         <div key={i} className="paragraph-row">
           <textarea rows={3} value={paragraph} readOnly={readOnly} aria-label={`Paragraphe ${i + 1}`}
