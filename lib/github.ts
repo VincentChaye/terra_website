@@ -73,6 +73,21 @@ export async function getFile(
   return { text: Buffer.from(f.content, "base64").toString("utf-8"), sha: f.sha };
 }
 
+/** Liste les fichiers d'un dossier du repo (sous-dossiers exclus). [] si absent. */
+export async function listDir(
+  path: string,
+  ref = "main"
+): Promise<{ name: string; path: string }[]> {
+  const { status, json } = await gh(
+    "GET",
+    repoPath(`contents/${encodeURIComponent(path)}?ref=${ref}`)
+  );
+  if (status === 404) return [];
+  if (status !== 200) throw new Error(`GitHub ${status} en listant ${path}`);
+  const items = json as { type: string; name: string; path: string }[];
+  return items.filter((i) => i.type === "file").map(({ name, path }) => ({ name, path }));
+}
+
 /** Crée UN commit sur main contenant tous les fichiers. Renvoie son sha. */
 export async function commitFiles(files: RepoFile[], message: string): Promise<string> {
   const ref = (await ghOk("GET", repoPath(`git/ref/${encodeURIComponent("heads/main")}`))) as {

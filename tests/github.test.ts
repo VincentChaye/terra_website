@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { commitFiles, getFile, readLocks, writeLocks } from "@/lib/github";
+import { commitFiles, getFile, listDir, readLocks, writeLocks } from "@/lib/github";
 
 // Mock de fetch : on route par (méthode, chemin) et on enregistre les appels.
 type Handler = (init?: RequestInit) => { status: number; json: unknown };
@@ -73,5 +73,25 @@ describe("verrous (branche cms-locks)", () => {
     routes["GET /repos/org/tn-site/git/ref/heads%2Fcms-locks"] = () => ({ status: 200, json: {} });
     routes["PUT /repos/org/tn-site/contents/locks.json"] = () => ({ status: 409, json: {} });
     expect(await writeLocks({}, "old-sha")).toBe(false);
+  });
+});
+
+describe("listDir", () => {
+  it("liste les fichiers d'un dossier (en filtrant les sous-dossiers)", async () => {
+    routes["GET /repos/org/tn-site/contents/public%2Fuploads%2Fpresse?ref=main"] = () => ({
+      status: 200,
+      json: [
+        { type: "file", name: "a-12345678.webp", path: "public/uploads/presse/a-12345678.webp" },
+        { type: "dir", name: "archives", path: "public/uploads/presse/archives" },
+      ],
+    });
+    expect(await listDir("public/uploads/presse")).toEqual([
+      { name: "a-12345678.webp", path: "public/uploads/presse/a-12345678.webp" },
+    ]);
+  });
+
+  it("renvoie [] si le dossier n'existe pas", async () => {
+    routes["GET /repos/org/tn-site/contents/public%2Fuploads%2Fpresse?ref=main"] = () => ({ status: 404, json: {} });
+    expect(await listDir("public/uploads/presse")).toEqual([]);
   });
 });
