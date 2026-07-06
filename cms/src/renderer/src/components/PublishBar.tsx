@@ -59,18 +59,30 @@ export function PublishBar({ entry, collection, session, draft, editing, onPubli
   }
 
   // Sondage du déploiement Pages jusqu'à son issue.
+  // Dépendances sur des primitives stables (pas sur `state` en entier) : sinon
+  // chaque tick (qui change l'identité de `state` via setState) recrée l'intervalle
+  // toutes les 10 s au lieu de laisser le sondage courir.
+  const deploySha = state.step === "deploying" ? state.sha : null;
+  const deployStatus = state.step === "deploying" ? state.deploy?.status : undefined;
   useEffect(() => {
-    if (state.step !== "deploying" || state.deploy?.status === "completed") return;
+    if (deploySha === null || deployStatus === "completed") return;
+    const sha = deploySha;
     const timer = setInterval(async () => {
       try {
-        const { deploy } = await api.status(session.token, state.sha);
+        const { deploy } = await api.status(session.token, sha);
         setState((s) => (s.step === "deploying" ? { ...s, deploy } : s));
-      } catch {
-        // panne passagère : on retentera au prochain tick
+      } catch (e) {
+        // Un JWT expiré (401) ne se résoudra pas tout seul : on arrête le sondage
+        // plutôt que de tourner indéfiniment. Les autres erreurs sont passagères,
+        // on retentera au prochain tick.
+        if (e instanceof ApiError && e.status === 401) {
+          clearInterval(timer);
+          setState((s) => (s.step === "deploying" ? { step: "idle" } : s));
+        }
       }
     }, DEPLOY_POLL_MS);
     return () => clearInterval(timer);
-  }, [state, session.token]);
+  }, [deploySha, deployStatus, session.token]);
 
   return (
     <div className="publish-bar">
