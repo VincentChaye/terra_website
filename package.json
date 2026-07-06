@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "sync:registry": "node scripts/sync-registry.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
