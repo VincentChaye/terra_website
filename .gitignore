@@ -47,6 +47,3 @@ next-env.d.ts
 !CLAUDE.md
 !docs/**/*.md
 
-# CMS (app Electron) — /node_modules ci-dessus est ancré à la racine
-cms/node_modules/
-cms/out/

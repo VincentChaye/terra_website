@@ -12,7 +12,6 @@ services:
       ignoredPaths:
         - content/**
         - public/uploads/**
-        - cms/**
         - docs/**
     envVars:
       - key: NODE_VERSION

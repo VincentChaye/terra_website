@@ -2,8 +2,10 @@
  * content/registry.ts — Schémas Zod + registre de contenu du CMS
  *
  * Module PUR (aucun accès disque) : importable par le loader serveur
- * (lib/content.ts), les routes /api/admin/* et l'app Electron (Plan 2).
- * Ajouter une entrée ici = elle apparaît dans le CMS.
+ * (lib/content.ts) et les routes /api/admin/*. SOURCE DE VÉRITÉ du registre :
+ * l'app Electron (dépôt séparé tn-cms) en embarque une copie synchronisée —
+ * toute modification ici doit être répercutée dans tn-cms/content/registry.ts.
+ * Ajouter une entrée (dans les deux dépôts) = elle apparaît dans le CMS.
  *
  * Le champ `id` des éléments de collection n'est pas déclaré dans `fields` :
  * il est généré automatiquement par l'app d'édition, jamais saisi.
