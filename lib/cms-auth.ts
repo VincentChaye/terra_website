@@ -53,8 +53,13 @@ export async function wimiUserLogin(email: string, password: string): Promise<Wi
 /** L'utilisateur a-t-il accès à l'espace qui donne droit au CMS ? */
 export async function userHasCmsAccess(s: WimiUserSession): Promise<boolean> {
   const spaceId = Number(requiredEnv("WIMI_CMS_SPACE_ID"));
+  // Cible validée empiriquement (2026-07-06) : « project.GetList » n'existe pas
+  // (la WApi renvoie un 400 générique pour toute cible inconnue). La liste des
+  // espaces accessibles à la session est main.session.LoadProjects — réponse
+  // { projects: [{ project_id, … }], pagination } (batch_size 250 : pas de
+  // pagination à gérer à l'échelle de l'association).
   const { data } = await wimiCall(
-    "project.GetList",
+    "main.session.LoadProjects",
     { account_id: s.accountId, user_id: s.userId },
     null,
     { token: s.token }

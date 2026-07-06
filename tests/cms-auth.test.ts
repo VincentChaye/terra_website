@@ -48,6 +48,14 @@ describe("userHasCmsAccess", () => {
   it("true si l'espace autorisé est dans la liste", async () => {
     mockCall.mockResolvedValueOnce({ header: {}, data: { projects: [{ project_id: 41 }, { project_id: 42 }] } });
     await expect(userHasCmsAccess(session)).resolves.toBe(true);
+    // Cible validée empiriquement le 2026-07-06 contre la vraie WApi :
+    // project.GetList n'existe pas (400 générique), c'est main.session.LoadProjects.
+    expect(mockCall).toHaveBeenCalledWith(
+      "main.session.LoadProjects",
+      { account_id: 3, user_id: 7 },
+      null,
+      { token: "t" }
+    );
   });
   it("false sinon", async () => {
     mockCall.mockResolvedValueOnce({ header: {}, data: { projects: [{ project_id: 41 }] } });
