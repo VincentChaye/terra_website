@@ -1,0 +1,15 @@
+# Frontend statique (Next.js export). Le backend Fastify est un service
+# séparé, sur une autre origine/port (voir tn-backend.service) — les appels
+# depuis le frontend passent par CORS (FRONTEND_ORIGIN côté backend).
+
+server {
+    listen 80;
+    server_name terra-numerica.example;
+
+    root /opt/tn-site/frontend/out;
+    index index.html;
+
+    location / {
+        try_files $uri $uri.html $uri/ =404;
+    }
+}

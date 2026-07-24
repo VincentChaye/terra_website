@@ -1,0 +1,17 @@
+[Unit]
+Description=Terra Numerica — backend API (Fastify)
+After=network.target
+
+[Service]
+Type=simple
+# Adapter le chemin au dépôt cloné sur la machine.
+WorkingDirectory=/opt/tn-site/backend
+ExecStart=/usr/bin/node dist/server.js
+EnvironmentFile=/opt/tn-site/backend/.env
+Restart=always
+RestartSec=5
+User=tn-site
+Group=tn-site
+
+[Install]
+WantedBy=multi-user.target
