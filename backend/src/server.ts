@@ -1,9 +1,21 @@
+import process from "node:process";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import agendaRoutes from "./routes/agenda.js";
 import contactEntreprisesRoutes from "./routes/contact-entreprises.js";
 import reservationScolairesRoutes from "./routes/reservation-scolaires.js";
 import rateLimitPlugin from "./lib/rate-limit.js";
+
+// En prod, systemd injecte déjà backend/.env via EnvironmentFile= (voir
+// deploy/tn-backend.service) : process.env est alors déjà renseigné et cet
+// appel ne fait rien (loadEnvFile ne touche pas une variable déjà définie).
+// En dev (`npm run dev:back`) rien d'autre ne charge ce fichier, d'où l'appel
+// explicite ici — sans lui, backend/.env est silencieusement ignoré en local.
+try {
+  process.loadEnvFile();
+} catch {
+  // Pas de backend/.env (ex. variables déjà fournies par l'environnement) : on continue sans.
+}
 
 // trustProxy : si un nginx/reverse-proxy est placé devant ce process, on lit
 // l'IP réelle du visiteur dans X-Forwarded-For (sinon le rate-limiting par IP
