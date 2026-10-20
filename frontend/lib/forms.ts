@@ -1,9 +1,9 @@
 /**
  * lib/forms.ts — Schémas Zod partagés des formulaires
  *
- * Une seule source de vérité pour la validation, importée à la fois :
- *   - côté client  (composants "use client" via zodResolver)
- *   - côté serveur (Route Handlers du backend Render)
+ * Source de vérité unique. Copié tel quel dans backend/src/lib/forms.ts par
+ * `npm run sync:forms` (racine) — ne modifiez jamais la copie backend
+ * directement, éditez ce fichier puis relancez le sync (voir README).
  *
  * Le champ `website` est un honeypot anti-spam : invisible pour les humains,
  * il doit rester vide. Le schéma l'accepte (optionnel) ; c'est le handler

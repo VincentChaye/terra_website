@@ -85,8 +85,11 @@ Conséquences pratiques :
 - **Tout asset de `public/` doit passer par `asset()`** (`frontend/lib/asset.ts`), utile si le site est un
   jour servi sous un sous-chemin (`NEXT_PUBLIC_BASE_PATH`).
 - Voir `deploy/nginx.conf.example` et `deploy/tn-backend.service` pour la configuration de référence.
-- Les schémas de formulaires (`lib/forms.ts`) sont **dupliqués** entre `frontend/` et `backend/` (pas de
-  workspace npm pour l'instant) — à synchroniser à la main si un champ change.
+- Les schémas de formulaires ne sont plus dupliqués à la main : `frontend/lib/forms.ts` est la **source de
+  vérité**, `backend/src/lib/forms.ts` en est une copie **générée** par `npm run sync:forms` (racine) — ce
+  script tourne automatiquement avant `npm --prefix backend run build` (script `prebuild`) et avant
+  `npm --prefix backend run dev`. Éditez toujours la version `frontend/`, jamais la copie backend. Un test
+  (`frontend/tests/forms-sync.test.ts`) échoue si les deux fichiers divergent.
 
 ---
 
@@ -162,9 +165,14 @@ Aucune valeur ne doit être committée (`.env*` gitignoré, sauf `backend/.env.e
 ## Déploiement (machine unique, sans CI/CD)
 
 1. **Backend** : `git pull && npm --prefix backend ci && npm --prefix backend run build`, puis
-   `systemctl restart tn-backend` (unité de référence : `deploy/tn-backend.service`).
-2. **Frontend** : `npm run rebuild` à la racine (git pull + build export dans `frontend/out`) — nginx sert
-   directement ces fichiers, pas de reload nécessaire (`deploy/nginx.conf.example`).
+   `systemctl restart tn-backend` (unité de référence : `deploy/tn-backend.service`). Le build lance
+   automatiquement `sync:forms` (voir plus bas) avant de compiler.
+2. **Frontend** : `npm run rebuild` à la racine — lance `scripts/deploy-frontend.sh`, qui build dans un
+   dossier `frontend/releases/<horodatage>/` **distinct** du dossier servi, vérifie que le build contient
+   bien un `index.html`, puis ne bascule le symlink `frontend/current` (racine nginx, voir
+   `deploy/nginx.conf.example`) qu'une fois cette validation passée. But : nginx ne sert jamais un build
+   à moitié écrit, et un build cassé n'écrase pas le site en ligne. Les anciennes releases sont purgées
+   (5 dernières conservées).
 
 Après une modification de contenu (actualités), relancer le rebuild frontend pour publier.
 

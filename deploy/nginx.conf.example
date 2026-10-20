@@ -1,12 +1,17 @@
 # Frontend statique (Next.js export). Le backend Fastify est un service
 # séparé, sur une autre origine/port (voir tn-backend.service) — les appels
 # depuis le frontend passent par CORS (FRONTEND_ORIGIN côté backend).
+#
+# root pointe sur le symlink `current` (pas directement sur un dossier de
+# build) : scripts/deploy-frontend.sh construit chaque déploiement dans un
+# dossier horodaté puis ne bascule ce symlink qu'une fois le build validé —
+# nginx ne sert donc jamais un build à moitié écrit.
 
 server {
     listen 80;
     server_name terra-numerica.example;
 
-    root /opt/tn-site/frontend/out;
+    root /opt/tn-site/frontend/current;
     index index.html;
 
     location / {

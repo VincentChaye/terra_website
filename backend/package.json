@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node ../scripts/sync-forms.mjs",
     "dev": "tsx watch src/server.ts",
+    "prebuild": "node ../scripts/sync-forms.mjs",
     "build": "tsc",
     "start": "node dist/server.js"
   },

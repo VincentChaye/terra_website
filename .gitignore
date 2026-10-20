@@ -16,6 +16,8 @@ coverage/
 # next.js (frontend/)
 .next/
 out/
+releases/
+current
 
 # backend build
 dist/
@@ -44,7 +46,7 @@ next-env.d.ts
 # markdown files (auto-générés) — garder seulement README, configs agents et docs
 *.md
 !README.md
-!AGENTS.md
-!CLAUDE.md
-!docs/**/*.md
+
+
+
 

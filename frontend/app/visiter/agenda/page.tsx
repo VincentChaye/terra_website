@@ -9,8 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/visiter/agenda" },
 };
 
-// Page statique : l'agenda est chargé côté client depuis le backend Render
-// (cf. AgendaView → /api/agenda). Aucun secret ni fetch serveur ici.
+// Page statique : l'agenda est chargé côté client (cf. AgendaView → /api/agenda). Aucun secret ni fetch serveur ici.
 export default function AgendaPage() {
   return (
     <div>

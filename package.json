@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix frontend run build && npm --prefix backend run build",
-    "rebuild": "git pull && npm --prefix frontend ci && npm --prefix frontend run build",
+    "rebuild": "bash scripts/deploy-frontend.sh",
     "dev:front": "npm --prefix frontend run dev",
     "dev:back": "npm --prefix backend run dev",
+    "sync:forms": "node scripts/sync-forms.mjs",
     "install:all": "npm --prefix frontend install && npm --prefix backend install"
   }
 }

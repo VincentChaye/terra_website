@@ -1,13 +1,4 @@
-/**
- * lib/email.ts — Envoi d'email via l'API REST Resend (sans SDK)
- *
- * Même approche que lib/wimi.ts : un appel `fetch` direct, pas de dépendance.
- *
- * Variables d'env requises (backend Render) :
- *   RESEND_API_KEY     — clé API Resend
- *   CONTACT_FROM_EMAIL — expéditeur sur domaine vérifié (ex. "Site <site@terra-numerica.org>")
- *   CONTACT_TO_EMAIL   — destinataire des soumissions (ex. contact@terra-numerica.org)
- */
+// lib/email.ts — Envoi d'email via l'API REST Resend (sans SDK), voir README pour les variables d'env.
 
 const RESEND_API = "https://api.resend.com/emails";
 

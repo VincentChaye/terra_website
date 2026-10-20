@@ -45,8 +45,13 @@ export default function CookieBanner() {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // setVisible ici est volontaire malgré le lint : le consentement vit dans
+    // localStorage, indisponible côté serveur. Le calculer dans l'état initial
+    // (lazy useState) désynchroniserait le HTML pré-rendu (bannière masquée)
+    // du premier rendu client (bannière visible) → warning d'hydratation.
     const consent = readConsent();
     if (!consent || consent.v !== CONSENT_VERSION) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     }
     // Écouter l'event "rouvrir depuis la page confidentialité"
