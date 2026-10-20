@@ -43,12 +43,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# markdown files (auto-générés) — garder seulement README, guide de reprise, configs agents et docs
+# markdown files (auto-générés) — garder seulement README, guide de reprise et docs
 *.md
 !README.md
 !REPRISE.md
-!AGENTS.md
-!CLAUDE.md
 !docs/**/*.md
+
+# fichiers liés aux outils IA (config Claude Code, scratch des skills) :
+# jamais suivis, pas même via les exceptions *.md ci-dessus
+CLAUDE.md
+AGENTS.md
+.claude/
+.superpowers/
 
 

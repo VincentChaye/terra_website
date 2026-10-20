@@ -387,7 +387,7 @@ sans toucher au JSX : **revue de presse, newsletters, vidéos, rétrospectives**
 > auto-hébergée (commit « architecture back-front ») — il n'était pas prioritaire face à la mise en prod.
 > `../tn-cms` existe toujours comme dépôt séparé mais **n'est plus connecté à ce backend**. Portez-le vers
 > le backend Fastify (`backend/src/routes/`) si l'équipe a de nouveau besoin d'éditer sans coder ; l'historique
-> git (`git log --oneline -- 'app/api/admin/*'` avant le commit de split) et `docs/superpowers/` (specs/plans
+> git (`git log --oneline -- 'app/api/admin/*'` avant le commit de split) et `docs/cms/` (specs/plans
 > du chantier CMS) donnent le point de départ.
 
 En l'état, la seule façon de publier une actualité est de **modifier le JSON et déployer** (voie
@@ -653,6 +653,6 @@ sont des composants clients.
 | Vue d'ensemble, stack, architecture, variables d'env | [README.md](./README.md) |
 | Pourquoi le site est structuré ainsi, audit de l'ancien site | `../CONTEXTE_PROJET.md` |
 | Arborescence cible, redirections 301, charte | `../TN_Architecture_Cible/` |
-| CMS (débranché, à reprendre — voir section 7) | `docs/superpowers/`, `../tn-cms/README.md` |
+| CMS (débranché, à reprendre — voir section 7) | `docs/cms/`, `../tn-cms/README.md` |
 | API Next.js 16 (version exacte installée) | `frontend/node_modules/next/dist/docs/` |
 | Classes Tailwind | https://tailwindcss.com/docs |

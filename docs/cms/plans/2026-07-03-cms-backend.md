@@ -1,8 +1,7 @@
 # CMS Phase 2 — Plan 1 : Backend (API admin) Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Exposer sur le backend Render les routes `/api/admin/*` (login Wimi, verrous d'édition, lecture/publication de contenu via commits GitHub, statut de déploiement) définies par la spec `docs/superpowers/specs/2026-07-03-cms-design.md`, testables par API sans l'app Electron.
+**Goal:** Exposer sur le backend Render les routes `/api/admin/*` (login Wimi, verrous d'édition, lecture/publication de contenu via commits GitHub, statut de déploiement) définies par la spec `docs/cms/specs/2026-07-03-cms-design.md`, testables par API sans l'app Electron.
 
 **Architecture:** Le contenu vit dans le repo ; le backend valide (Zod), verrouille (branche `cms-locks`) et commite (API GitHub Git Data) — aucun état persistant sur Render. Auth = relais `auth.user.Login` Wimi + vérification d'accès à un espace + JWT signé. Les plans suivants (app Electron, distribution) consomment ces routes.
 

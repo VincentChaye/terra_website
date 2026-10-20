@@ -1,6 +1,5 @@
 # CMS Phase 2 — Plan 2 : App Electron (`cms/`) Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Construire l'application de bureau Electron (`cms/`) qui consomme les routes `/api/admin/*` du Plan 1 : login Wimi, navigation par registre, formulaires générés, verrous d'édition, brouillons locaux, images WebP, publication avec suivi du déploiement. Livrable : app complète exécutable en dev (`npm run dev` dans `cms/`) ; l'empaquetage/distribution est le Plan 3.
 

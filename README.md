@@ -196,4 +196,4 @@ Après une modification de contenu (actualités), relancer le rebuild frontend p
 | `../CONTEXTE_PROJET.md` | Contexte métier, audit de l'ancien site, justification des choix |
 | `../TN_Architecture/` | Analyse de l'ancien site WordPress |
 | `../TN_Architecture_Cible/` | Arborescence cible, redirections 301, charte |
-| `docs/superpowers/` | Spécifications et plans du chantier CMS |
+| `docs/cms/` | Spécifications et plans du chantier CMS |
