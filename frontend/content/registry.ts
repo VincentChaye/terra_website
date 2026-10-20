@@ -1,15 +1,14 @@
 /**
- * content/registry.ts — Schémas Zod + registre de contenu du CMS
+ * content/registry.ts — Schémas Zod des contenus éditables (actualités)
  *
- * Module PUR (aucun accès disque), partagé entre le site (loader serveur
- * lib/content.ts, routes /api/admin/*) et l'app Electron (dépôt tn-cms).
- * SOURCE DE VÉRITÉ : le dépôt du site (terra_website). Modifier UNIQUEMENT
- * la copie du site, puis lancer `npm run sync:registry` (côté site) pour
- * régénérer celle de tn-cms — un test échoue dans chaque dépôt si les deux
- * copies divergent. Ajouter une entrée ici (+ sync) = elle apparaît dans le CMS.
+ * Module PUR (aucun accès disque), utilisé par le loader serveur lib/content.ts.
  *
- * Le champ `id` des éléments de collection n'est pas déclaré dans `fields` :
- * il est généré automatiquement par l'app d'édition, jamais saisi.
+ * ⚠️ Le CMS Electron (dépôt ../tn-cms) qui consommait aussi ce fichier via un
+ * script sync:registry a été débranché lors du passage à l'architecture
+ * auto-hébergée (voir ../../REPRISE.md, section 7) : il n'y a plus de sync,
+ * plus de routes /api/admin/*, et le type `fields` ci-dessous (widgets) ne
+ * pilote plus aucune interface — il ne reste utile que si ce CMS est un jour
+ * reconnecté à ce backend.
  */
 
 import { z } from "zod";
