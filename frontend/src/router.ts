@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, type RouteParams, type RouteRecordRaw } from "vue-router";
 import routeList from "./routes.json";
 import NotFound from "./pages/NotFound.vue";
 import { getRetrospective } from "./lib/content";
@@ -18,12 +18,9 @@ const routes: RouteRecordRaw[] = routeList.map(({ path, title, description, cano
   const load = pages[file];
   if (!load) throw new Error(`[router] page introuvable pour ${path} (${file})`);
   const route: RouteRecordRaw = { path, component: load, meta: { title, description, canonical } };
-  // Une année sans rétrospective → vraie page 404 (titre + noindex), URL conservée.
+  // Une année sans rétrospective → vraie page 404 (voir router.beforeEach).
   if (path === "/actualites/retrospectives/:year") {
-    route.beforeEnter = (to) =>
-      getRetrospective(Number(to.params.year))
-        ? true
-        : { name: "not-found", params: { pathMatch: to.path.slice(1).split("/") }, query: to.query, hash: to.hash };
+    route.meta!.exists = (params: RouteParams) => !!getRetrospective(Number(params.year));
   }
   return route;
 });
@@ -48,4 +45,14 @@ export const router = createRouter({
     if (to.path === from.path) return false;
     return { top: 0 };
   },
+});
+
+// Garde global (et non beforeEnter : celui-ci ne se relance pas quand seul le
+// paramètre change, ex. /2025 → /1999) : une route dont `meta.exists` refuse
+// les paramètres affiche la 404, URL conservée.
+router.beforeEach((to) => {
+  const exists = to.meta.exists as ((params: RouteParams) => boolean) | undefined;
+  if (exists && !exists(to.params)) {
+    return { name: "not-found", params: { pathMatch: to.path.slice(1).split("/") }, query: to.query, hash: to.hash };
+  }
 });
