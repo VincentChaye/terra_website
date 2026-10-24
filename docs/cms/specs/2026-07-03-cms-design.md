@@ -1,3 +1,5 @@
+> ⚠️ **Document historique** (juillet 2026) : rédigé pour l'ancien frontend Next.js, depuis remplacé par Vue 3 + Vite, et pour un CMS aujourd'hui débranché. À adapter au backend Fastify avant toute reprise.
+
 # CMS Terra Numerica — Design (Phase 2)
 
 **Date** : 2026-07-03

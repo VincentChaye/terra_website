@@ -1,4 +1,4 @@
-# Frontend statique (Next.js export). Le backend Fastify est un service
+# Frontend statique (SPA Vue 3 + Vite, build dans frontend/out). Le backend Fastify est un service
 # séparé, sur une autre origine/port (voir tn-backend.service) — les appels
 # depuis le frontend passent par CORS (FRONTEND_ORIGIN côté backend).
 #
@@ -14,7 +14,14 @@ server {
     root /opt/tn-site/frontend/current;
     index index.html;
 
+    # SPA en mode history : toute URL inconnue retombe sur index.html (le routeur
+    # Vue affiche la page ou la 404). Les assets hachés de /assets sont immuables.
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
     location / {
-        try_files $uri $uri.html $uri/ =404;
+        try_files $uri $uri/ /index.html;
     }
 }

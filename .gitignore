@@ -13,8 +13,7 @@ node_modules/
 # testing
 coverage/
 
-# next.js (frontend/)
-.next/
+# frontend (Vite)
 out/
 releases/
 current
@@ -41,7 +40,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # markdown files (auto-générés) — garder seulement README, guide de reprise et docs
 *.md

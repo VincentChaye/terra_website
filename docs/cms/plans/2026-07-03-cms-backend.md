@@ -1,3 +1,5 @@
+> ⚠️ **Document historique** (juillet 2026) : rédigé pour l'ancien frontend Next.js, depuis remplacé par Vue 3 + Vite, et pour un CMS aujourd'hui débranché. À adapter au backend Fastify avant toute reprise.
+
 # CMS Phase 2 — Plan 1 : Backend (API admin) Implementation Plan
 
 

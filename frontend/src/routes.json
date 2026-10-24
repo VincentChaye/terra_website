@@ -1,0 +1,236 @@
+[
+  {
+    "path": "/",
+    "title": "Terra Numerica — Les sciences du numérique à portée de main",
+    "description": "Innover et agir pour la culture scientifique et l'éducation au numérique de manière ludique et participative. Ateliers, conférences, espaces partenaires — CNRS · Inria · Université Côte d'Azur.",
+    "canonical": "/"
+  },
+  {
+    "path": "/accessibilite",
+    "title": "Accessibilité — Terra Numerica",
+    "description": "Déclaration de conformité RGAA 4.1 de Terra Numerica. Niveau d'accessibilité atteint, contact médiateur.",
+    "canonical": "/accessibilite"
+  },
+  {
+    "path": "/actualites",
+    "title": "Actualités Terra Numerica",
+    "description": "Découvrir avec un autre regard les actions de Terra Numerica pour l'éducation au numérique : lettres d'information Terra Numerica, vidéos des actions marquantes, articles de presse.",
+    "canonical": "/actualites"
+  },
+  {
+    "path": "/actualites/newsletter",
+    "title": "La lettre Terra Numerica",
+    "description": "Une lettre d'information mensuelle pour suivre l'actualité de Terra Numerica, depuis décembre 2020.",
+    "canonical": "/actualites/newsletter"
+  },
+  {
+    "path": "/actualites/presse",
+    "title": "Articles sur Terra Numerica",
+    "description": "Publications consacrées à Terra Numerica dans les médias depuis 2022.",
+    "canonical": "/actualites/presse"
+  },
+  {
+    "path": "/actualites/retrospectives/:year",
+    "title": "Rétrospective :year — Terra Numerica",
+    "description": "Bilan des actions et événements Terra Numerica pour l'année :year.",
+    "canonical": "/actualites/retrospectives/:year"
+  },
+  {
+    "path": "/actualites/videos",
+    "title": "Vidéothèque Terra Numerica",
+    "description": "Revivez des temps forts de Terra Numerica : événements, ateliers et conférences en vidéo.",
+    "canonical": "/actualites/videos"
+  },
+  {
+    "path": "/contact",
+    "title": "Contact et mentions légales — Terra Numerica",
+    "description": "Contactez l'équipe Terra Numerica. Adresse, email, et informations légales.",
+    "canonical": "/contact"
+  },
+  {
+    "path": "/decouvrir",
+    "title": "Découvrir Terra Numerica",
+    "description": "Découvrez le projet, le collectif, les territoires et les partenaires de Terra Numerica.",
+    "canonical": "/decouvrir"
+  },
+  {
+    "path": "/decouvrir/chiffres-et-carte",
+    "title": "Terra Numerica en chiffres et en carte",
+    "description": "Découvrez l'impact de Terra Numerica : 250 lieux d'actions, 150 ateliers pédagogiques, 26 Espaces Partenaires.",
+    "canonical": "/decouvrir/chiffres-et-carte"
+  },
+  {
+    "path": "/decouvrir/collectif",
+    "title": "Le collectif Terra Numerica",
+    "description": "100 membres actifs en 2025, experts en médiation scientifique, pédagogie et numérique. Rejoignez le collectif.",
+    "canonical": "/decouvrir/collectif"
+  },
+  {
+    "path": "/decouvrir/nous-rejoindre",
+    "title": "Nous rejoindre — Terra Numerica",
+    "description": "Rejoignez le collectif Terra Numerica : participez aux groupes de travail, animez des ateliers, contribuez aux développements.",
+    "canonical": "/decouvrir/nous-rejoindre"
+  },
+  {
+    "path": "/decouvrir/partenaires-financeurs",
+    "title": "Partenaires & Financeurs — Terra Numerica",
+    "description": "Terra Numerica est un consortium porté par le CNRS, Inria et Université Côte d'Azur, regroupant un large ensemble de partenaires dans le domaine du numérique.",
+    "canonical": "/decouvrir/partenaires-financeurs"
+  },
+  {
+    "path": "/decouvrir/projet",
+    "title": "Bienvenue à Terra Numerica",
+    "description": "Terra Numerica est un consortium fédérateur émanant du CNRS, Inria et Université Côte d'Azur pour la culture scientifique et l'éducation au numérique.",
+    "canonical": "/decouvrir/projet"
+  },
+  {
+    "path": "/decouvrir/territoires",
+    "title": "Développement territorial — Terra Numerica",
+    "description": "Terra Numerica développe des réseaux interconnectés d'Espaces de Culture Numérique en Région Sud et au-delà.",
+    "canonical": "/decouvrir/territoires"
+  },
+  {
+    "path": "/entreprises",
+    "title": "Entreprises et professionnels",
+    "description": "Team building, formations sur mesure et mécénat autour des sciences du numérique — Terra Numerica.",
+    "canonical": "/entreprises"
+  },
+  {
+    "path": "/entreprises/contact",
+    "title": "Contact entreprises",
+    "description": "Contactez Terra Numerica pour organiser un team building, une formation ou un partenariat de mécénat.",
+    "canonical": "/entreprises/contact"
+  },
+  {
+    "path": "/entreprises/formations",
+    "title": "Modules Formation — Terra Numerica",
+    "description": "Terra Numerica propose des formations pour les enseignants, professionnels de la médiation scientifique et salariés d'entreprises.",
+    "canonical": "/entreprises/formations"
+  },
+  {
+    "path": "/entreprises/mecenat",
+    "title": "Mécénat & Partenariat — Terra Numerica",
+    "description": "Terra Numerica propose des partenariats structurants pour nouer le dialogue avec le grand public autour des recherches et innovations des territoires.",
+    "canonical": "/entreprises/mecenat"
+  },
+  {
+    "path": "/entreprises/team-building",
+    "title": "Visite Découverte et Team Building — Terra Numerica",
+    "description": "Terra Numerica permet aux professionnels de sensibiliser leurs équipes aux sciences et horizons du numérique.",
+    "canonical": "/entreprises/team-building"
+  },
+  {
+    "path": "/mentions-legales",
+    "title": "Mentions légales — Terra Numerica",
+    "description": "Informations légales de Terra Numerica : éditeur, hébergeur, propriété intellectuelle.",
+    "canonical": "/mentions-legales"
+  },
+  {
+    "path": "/plan-du-site",
+    "title": "Plan du site — Terra Numerica",
+    "description": "Vue complète de l'arborescence du site Terra Numerica.",
+    "canonical": "/plan-du-site"
+  },
+  {
+    "path": "/politique-confidentialite",
+    "title": "Politique de confidentialité — Terra Numerica",
+    "description": "Traitement de vos données personnelles, vos droits RGPD et politique de gestion des cookies.",
+    "canonical": "/politique-confidentialite"
+  },
+  {
+    "path": "/ressources",
+    "title": "Ressources ludiques — Terra Numerica",
+    "description": "Terra Numerica créé des ressources ludiques pour découvrir, explorer et expérimenter les sciences du numérique au sein du Lab Créativité : ateliers ludiques, conférences interactives, jeux en ligne.",
+    "canonical": "/ressources"
+  },
+  {
+    "path": "/ressources/ateliers",
+    "title": "Ateliers ludiques — Terra Numerica",
+    "description": "Les ateliers Terra Numerica sont déployés au sein des Espaces de Culture Numérique pour aborder différents aspects des sciences du numérique.",
+    "canonical": "/ressources/ateliers"
+  },
+  {
+    "path": "/ressources/conferences",
+    "title": "Conférences interactives — Terra Numerica",
+    "description": "Conférences grand public et scolaires sur la géométrie, les réseaux, l'IA, le football et bien plus — destinées à des publics variés.",
+    "canonical": "/ressources/conferences"
+  },
+  {
+    "path": "/ressources/lab-creativite",
+    "title": "Lab Créativité Terra Numerica",
+    "description": "Le cœur de Terra Numerica : groupes de travail, création de ressources et recherche participative en sciences de l'éducation appliquées à la médiation scientifique.",
+    "canonical": "/ressources/lab-creativite"
+  },
+  {
+    "path": "/ressources/livret-science-tour",
+    "title": "Livret d'activités Science Tour Terra Numerica",
+    "description": "Livret d'activités publié dans le cadre du Science Tour Terra Numerica — 60 pages, 40 fiches, à destination des médiateurs, enseignants et citoyens.",
+    "canonical": "/ressources/livret-science-tour"
+  },
+  {
+    "path": "/ressources/manuel-galejade",
+    "title": "Manuel Galéjade – Volume I de la Collection Terra Numerica",
+    "description": "S'initier aux mathématiques et à l'informatique en jouant avec les graphes — manuel pédagogique Terra Numerica.",
+    "canonical": "/ressources/manuel-galejade"
+  },
+  {
+    "path": "/ressources/trophees-makers",
+    "title": "Trophées des Makers du numérique — Terra Numerica",
+    "description": "Initiative portée par Telecom Valley et Terra Numerica pour construire collectivement les ateliers de médiation scientifique de demain.",
+    "canonical": "/ressources/trophees-makers"
+  },
+  {
+    "path": "/scolaires",
+    "title": "Scolaires et enseignants",
+    "description": "Ateliers, conférences et visites guidées pour les classes du CP à la Terminale. Gratuit pour les établissements publics.",
+    "canonical": "/scolaires"
+  },
+  {
+    "path": "/scolaires/ateliers",
+    "title": "Ateliers Terra Numerica",
+    "description": "Les ateliers Terra Numerica déployés au sein des Espaces de Culture Numérique pour aborder différents aspects des sciences du numérique.",
+    "canonical": "/scolaires/ateliers"
+  },
+  {
+    "path": "/scolaires/offre",
+    "title": "Modules médiations pour les scolaires et jeunes — Terra Numerica",
+    "description": "Terra Numerica propose des modules pour les scolaires (de la maternelle au supérieur) et les publics jeunes : Déclic, Exploratoire, Expédition.",
+    "canonical": "/scolaires/offre"
+  },
+  {
+    "path": "/scolaires/reserver",
+    "title": "Réserver une visite scolaire",
+    "description": "Demandez un créneau pour amener votre classe à Terra Numerica. Réponse sous 48 h ouvrées.",
+    "canonical": "/scolaires/reserver"
+  },
+  {
+    "path": "/scolaires/stages-eleves",
+    "title": "Stages élèves — Terra Numerica",
+    "description": "Terra Numerica accueille des stagiaires (3e et seconde) pour des stages de découverte des métiers du numérique et de la recherche scientifique.",
+    "canonical": "/scolaires/stages-eleves"
+  },
+  {
+    "path": "/visiter",
+    "title": "Visiter Terra Numerica",
+    "description": "Venez découvrir nos espaces, assistez à nos événements grand public ou planifiez votre visite.",
+    "canonical": "/visiter"
+  },
+  {
+    "path": "/visiter/agenda",
+    "title": "Agenda — Événements grand public",
+    "description": "Tous les événements Terra Numerica ouverts au grand public : samedis numériques, conférences, fêtes de la science, villages des sciences.",
+    "canonical": "/visiter/agenda"
+  },
+  {
+    "path": "/visiter/espaces-partenaires",
+    "title": "Espaces Partenaires Terra Numerica",
+    "description": "Un réseau de 26 Espaces Partenaires Terra Numerica répartis sur 4 départements en Région Sud.",
+    "canonical": "/visiter/espaces-partenaires"
+  },
+  {
+    "path": "/visiter/sophia",
+    "title": "Terra Numerica Sophia – Région Sud",
+    "description": "Visitez l'espace permanent Terra Numerica à Valbonne Sophia Antipolis. Adresse, horaires et accès.",
+    "canonical": "/visiter/sophia"
+  }
+]
