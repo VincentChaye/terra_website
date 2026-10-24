@@ -3,7 +3,7 @@
 Site public de [Terra Numerica](https://terra-numerica.org), centre de médiation aux sciences du numérique
 (écosystème CNRS / Inria / Université Côte d'Azur, Sophia Antipolis).
 
-Refonte du WordPress historique en Next.js. Le site est pensé pour être **repris et modifié facilement** :
+Refonte du WordPress historique en Vue 3. Le site est pensé pour être **repris et modifié facilement** :
 chaque page est un fichier autonome, le contenu texte est écrit directement dedans, et les actualités sont
 éditables sans toucher au code.
 
@@ -14,18 +14,18 @@ chaque page est un fichier autonome, le contenu texte est écrit directement ded
 
 ## Démarrage rapide
 
-Deux projets séparés, chacun avec son `package.json` : `frontend/` (Next.js, export statique) et
+Deux projets séparés, chacun avec son `package.json` : `frontend/` (Vue 3 + Vite, SPA statique) et
 `backend/` (API Fastify).
 
 ```bash
 npm run install:all          # installe frontend/ et backend/
 
-npm run dev:front            # http://localhost:3000 (pages, export statique en dev)
+npm run dev:front            # http://localhost:5173 (Vite, rechargement à chaud)
 npm run dev:back             # API sur http://localhost:3001
 ```
 
 Les pages fonctionnent immédiatement. Pour que l'agenda et les formulaires marchent, il faut un fichier
-`backend/.env` (copier `backend/.env.example`) et `frontend/.env.local` (`NEXT_PUBLIC_API_BASE`) : ces
+`backend/.env` (copier `backend/.env.example`) et `frontend/.env.local` (`VITE_API_BASE`) : ces
 fichiers ne sont pas versionnés, demandez les valeurs à l'équipe — la liste des clés attendues est dans
 « Variables d'environnement » plus bas.
 
@@ -34,24 +34,46 @@ fichiers ne sont pas versionnés, demandez les valeurs à l'équipe — la liste
 | Commande | Effet |
 |---|---|
 | `npm run dev:front` / `dev:back` | Serveurs de développement (frontend / backend) |
-| `npm run build` | Build de production des deux projets |
+| `npm run build` | Build de production des deux projets (frontend : tests + types + Vite + sitemap) |
 | `npm run rebuild` | `git pull` + rebuild du frontend uniquement (à lancer à la main après une publication de contenu) |
-| `npm --prefix frontend run lint` | ESLint |
 | `npm --prefix frontend test` | Tests unitaires (Vitest, `frontend/tests/`) |
+| `npm --prefix frontend exec vue-tsc -- --noEmit` | Vérification des types (inclus dans `npm run build`) |
+| `npm --prefix frontend run preview` | Sert le build de `frontend/out` en local (après `build`) |
+
+---
+
+## Historique : migration Next.js → Vue
+
+Le frontend était en Next.js 16 / React 19 (export statique). Il a été réécrit en **Vue 3 + Vite** sans changer
+les URLs, le design (Tailwind, mêmes classes), le backend ni le mode de déploiement. Repères pour qui connaît
+l'ancienne version :
+
+| Avant (Next/React) | Maintenant (Vue) |
+|---|---|
+| `app/<chemin>/page.tsx` + `export const metadata` | `src/pages/<chemin>/index.vue` + entrée dans `src/routes.json` |
+| `app/layout.tsx` | `src/App.vue` (+ balises `<head>` via `@unhead/vue`) |
+| `app/sitemap.ts` | `scripts/gen-sitemap.mjs` (lit `src/routes.json`, lancé par `npm run build`) |
+| `<Link>`, `<Image>` | `<RouterLink>`, `<img>` |
+| `react-hook-form` + `zodResolver` | `src/lib/useZodForm.ts` + les mêmes schémas Zod |
+| `NEXT_PUBLIC_*`, `NEXT_EXPORT_DIR` | `VITE_API_BASE`, `VITE_BASE_PATH`, `VITE_OUT_DIR` |
+| composants shadcn (`components/ui`) | supprimés (inutilisés) |
+| HTML pré-rendu par page | SPA : `index.html` unique, nginx en repli (`try_files … /index.html`) |
+
+Le dernier commit Next.js est sur `main` avant la fusion de la branche `migration-vue`.
 
 ---
 
 ## Stack
 
-- **Next.js 16** (App Router, React Server Components) + **React 19** + **TypeScript** — frontend, export statique
+- **Vue 3** (`<script setup>`) + **Vue Router 4** + **Vite** + **TypeScript** — frontend, SPA servie en statique
 - **Fastify** — backend API pure (agenda, formulaires)
-- **Tailwind CSS v4** (design tokens dans `frontend/app/globals.css`) + composants **shadcn/ui** sur base `@base-ui/react`
-- **react-hook-form** + **zod** pour les formulaires (schémas dupliqués client/serveur, voir plus bas)
+- **Tailwind CSS v4** (design tokens dans `frontend/src/assets/main.css`)
+- **zod** pour les formulaires, via le composable `useZodForm` (schémas partagés client/serveur, voir plus bas) ; **@unhead/vue** pour `<title>`/meta par page
 - **Resend** pour l'envoi d'e-mails, **Wimi** (outil interne de l'association) comme source de l'agenda
 - **Vitest** pour les tests
 
-> ⚠️ Next.js 16 est récent : ses conventions diffèrent de beaucoup de tutoriels en ligne.
-> En cas de doute, la doc de la version installée est dans `frontend/node_modules/next/dist/docs/`.
+> ℹ️ Le site est une **SPA** : le HTML est rendu par le navigateur, pas pré-rendu. nginx renvoie `index.html`
+> pour toute URL (voir `deploy/nginx.conf.example`). Un pré-rendu (`vite-ssg`) pourra être ajouté plus tard.
 
 ---
 
@@ -64,7 +86,7 @@ de GitHub Pages, pas de Render, pas de workflow GitHub Actions. Tout tourne sur 
                 nginx (frontend/out, statique)         systemd → node backend/dist/server.js
    Visiteur ──► origine A ─────────────────────┐   ┌─► origine B (Fastify, port 3001)
                                                 │   │
-                                    fetch(NEXT_PUBLIC_API_BASE + /api/…) — CORS
+                                    fetch(VITE_API_BASE + /api/…) — CORS
                                                 └───┘
                                                      │
                                           Wimi (agenda)   Resend (mails)
@@ -72,20 +94,20 @@ de GitHub Pages, pas de Render, pas de workflow GitHub Actions. Tout tourne sur 
 
 | | `frontend/` | `backend/` |
 |---|---|---|
-| Nature | Next.js, `output: "export"` | API Fastify pure |
+| Nature | Vue 3 + Vite (SPA, build dans `out/`) | API Fastify pure |
 | Servi par | nginx (fichiers statiques de `frontend/out`) | systemd (`deploy/tn-backend.service`) |
-| Contenu | Toutes les pages HTML | `/api/agenda`, `/api/contact-entreprises`, `/api/reservation-scolaires` |
+| Contenu | `index.html` + assets JS/CSS (routage côté navigateur) | `/api/agenda`, `/api/contact-entreprises`, `/api/reservation-scolaires` |
 | Déploiement | manuel : `npm run rebuild` puis reload nginx si besoin | manuel : `git pull && npm --prefix backend run build && systemctl restart tn-backend` |
 
 Conséquences pratiques :
 
 - **Frontend et backend sont deux origines distinctes** (deux ports/domaines nginx) → le backend gère le
   **CORS** (`FRONTEND_ORIGIN`, `@fastify/cors`), le frontend appelle en URL absolue via `apiUrl()`
-  (`frontend/lib/api.ts`), qui préfixe avec `NEXT_PUBLIC_API_BASE`.
-- **Tout asset de `public/` doit passer par `asset()`** (`frontend/lib/asset.ts`), utile si le site est un
-  jour servi sous un sous-chemin (`NEXT_PUBLIC_BASE_PATH`).
+  (`frontend/src/lib/api.ts`), qui préfixe avec `VITE_API_BASE`.
+- **Tout asset de `public/` doit passer par `asset()`** (`frontend/src/lib/asset.ts`), utile si le site est un
+  jour servi sous un sous-chemin (`VITE_BASE_PATH`).
 - Voir `deploy/nginx.conf.example` et `deploy/tn-backend.service` pour la configuration de référence.
-- Les schémas de formulaires ne sont plus dupliqués à la main : `frontend/lib/forms.ts` est la **source de
+- Les schémas de formulaires ne sont plus dupliqués à la main : `frontend/src/lib/forms.ts` est la **source de
   vérité**, `backend/src/lib/forms.ts` en est une copie **générée** par `npm run sync:forms` (racine) — ce
   script tourne automatiquement avant `npm --prefix backend run build` (script `prebuild`) et avant
   `npm --prefix backend run dev`. Éditez toujours la version `frontend/`, jamais la copie backend. Un test
@@ -98,23 +120,25 @@ Conséquences pratiques :
 ```
 tn-site/
 ├── frontend/
-│   ├── app/                  # une page = un dossier + un page.tsx (App Router)
-│   │   ├── layout.tsx        # layout global : police, metadata, Header/Footer/CookieBanner
-│   │   ├── globals.css       # design tokens (couleurs, typo) + styles de base
-│   │   ├── page.tsx          # page d'accueil (mise en page sur mesure)
-│   │   ├── sitemap.ts        # liste des URLs — à mettre à jour à chaque nouvelle page
-│   │   └── decouvrir/ visiter/ scolaires/ entreprises/ ressources/ actualites/
-│   ├── components/
-│   │   ├── layout/           # Header (menu), Footer, PageHeader, CookieBanner
-│   │   ├── forms/             # formulaires (react-hook-form + zod)
-│   │   ├── agenda/            # vues semaine / mois / année
-│   │   └── ui/                 # composants shadcn (button, card…)
-│   ├── content/
-│   │   ├── registry.ts        # déclaration + schémas Zod des contenus éditables
-│   │   └── actualites/*.json  # le contenu éditable lui-même
-│   ├── lib/                  # utilitaires : api, asset, content, consent, forms, utils
-│   ├── tests/                 # tests Vitest
-│   └── public/                 # images, logos, favicon
+│   ├── index.html            # point d'entrée (lang, favicon)
+│   ├── vite.config.ts        # base (VITE_BASE_PATH), dossier de sortie (VITE_OUT_DIR)
+│   ├── scripts/gen-sitemap.mjs  # génère out/sitemap.xml depuis src/routes.json
+│   ├── src/
+│   │   ├── main.ts, App.vue  # bootstrap + layout global (Header/Footer/CookieBanner, <head>)
+│   │   ├── router.ts         # construit les routes depuis routes.json
+│   │   ├── routes.json       # LISTE DES PAGES : chemin, title, description, canonical (+ sitemap)
+│   │   ├── assets/main.css   # design tokens (couleurs, typo) + styles de base
+│   │   ├── pages/            # une page = un dossier + un index.vue (/a/b → pages/a/b/index.vue)
+│   │   ├── components/
+│   │   │   ├── layout/       # Header (menu), Footer, PageHeader, CookieBanner
+│   │   │   ├── forms/        # formulaires (useZodForm + zod)
+│   │   │   └── agenda/       # vues semaine / mois / année
+│   │   ├── content/
+│   │   │   ├── registry.ts        # déclaration + schémas Zod des contenus éditables
+│   │   │   └── actualites/*.json  # le contenu éditable lui-même
+│   │   └── lib/              # api, asset, content, consent, forms, useZodForm, date-utils
+│   ├── tests/                # tests Vitest
+│   └── public/               # images, logos, favicon
 ├── backend/
 │   └── src/
 │       ├── server.ts          # bootstrap Fastify + CORS
@@ -126,10 +150,10 @@ tn-site/
 ### Deux façons d'avoir du contenu
 
 1. **Texte en dur dans la page** (le cas général, la grande majorité des pages) : le texte est écrit
-   directement dans le `page.tsx`. C'est volontaire — modifier une page = éditer un seul fichier lisible.
+   directement dans le `index.vue`. C'est volontaire — modifier une page = éditer un seul fichier lisible.
 2. **Contenu JSON éditable** (uniquement les actualités : presse, newsletters, vidéos, rétrospectives) :
-   les données vivent dans `frontend/content/actualites/*.json`, sont validées par Zod et lues au build par
-   `frontend/lib/content.ts`.
+   les données vivent dans `frontend/src/content/actualites/*.json`, sont validées par Zod et embarquées au build par
+   `frontend/src/lib/content.ts`.
 
 ---
 
@@ -149,8 +173,8 @@ Aucune valeur ne doit être committée (`.env*` gitignoré, sauf `backend/.env.e
 
 | Variable | Où | Rôle |
 |---|---|---|
-| `NEXT_PUBLIC_API_BASE` | `frontend/.env.local` | URL absolue du backend appelée par le navigateur |
-| `NEXT_PUBLIC_BASE_PATH` | `frontend/.env.local` | Sous-chemin éventuel (vide par défaut) |
+| `VITE_API_BASE` | `frontend/.env.local` | URL absolue du backend appelée par le navigateur |
+| `VITE_BASE_PATH` | `frontend/.env.local` | Sous-chemin éventuel (vide par défaut) |
 | `PORT` | `backend/.env` | Port d'écoute du backend (défaut 3001) |
 | `FRONTEND_ORIGIN` | `backend/.env` | Origine autorisée en CORS |
 | `WIMI_APP_TOKEN` | `backend/.env` | Token applicatif Wimi |

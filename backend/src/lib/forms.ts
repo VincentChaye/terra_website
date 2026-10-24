@@ -1,4 +1,4 @@
-// ⚠️  Fichier généré depuis frontend/lib/forms.ts par `npm run sync:forms`.
+// ⚠️  Fichier généré depuis frontend/src/lib/forms.ts par `npm run sync:forms`.
 // Ne modifiez pas cette copie directement : éditez la source puis relancez le script.
 
 /**

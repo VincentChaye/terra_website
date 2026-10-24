@@ -6,7 +6,7 @@ import { payloadSchema, registry } from "@/content/registry";
 describe("registre de contenu", () => {
   it("chaque entrée pointe vers un fichier JSON existant et valide", () => {
     for (const [key, entry] of Object.entries(registry)) {
-      const raw = readFileSync(join(process.cwd(), "content", entry.file), "utf-8");
+      const raw = readFileSync(join(process.cwd(), "src", "content", entry.file), "utf-8");
       const result = payloadSchema(entry).safeParse(JSON.parse(raw));
       expect(result.success, `${key} : ${result.success ? "" : result.error.message}`).toBe(true);
     }

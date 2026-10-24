@@ -3,8 +3,8 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("synchronisation des schémas de formulaire", () => {
-  it("backend/src/lib/forms.ts est à jour par rapport à la source frontend/lib/forms.ts", () => {
-    const source = readFileSync(join(process.cwd(), "lib", "forms.ts"), "utf-8");
+  it("backend/src/lib/forms.ts est à jour par rapport à la source frontend/src/lib/forms.ts", () => {
+    const source = readFileSync(join(process.cwd(), "src", "lib", "forms.ts"), "utf-8");
     const copy = readFileSync(
       join(process.cwd(), "..", "backend", "src", "lib", "forms.ts"),
       "utf-8"

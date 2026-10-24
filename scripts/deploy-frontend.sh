@@ -11,7 +11,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 RELEASE_NAME="$(date +%Y%m%d%H%M%S)"
-RELEASE_REL="releases/$RELEASE_NAME"          # relatif à frontend/ (distDir)
+RELEASE_REL="releases/$RELEASE_NAME"          # relatif à frontend/ (outDir Vite)
 RELEASE_DIR="frontend/$RELEASE_REL"           # relatif à la racine du repo
 KEEP=5
 
@@ -22,7 +22,7 @@ echo "==> installation des dépendances frontend"
 npm --prefix frontend ci
 
 echo "==> build → $RELEASE_DIR"
-NEXT_EXPORT_DIR="$RELEASE_REL" npm --prefix frontend run build
+VITE_OUT_DIR="$RELEASE_REL" npm --prefix frontend run build
 
 echo "==> validation du build"
 if [ ! -s "$RELEASE_DIR/index.html" ]; then
